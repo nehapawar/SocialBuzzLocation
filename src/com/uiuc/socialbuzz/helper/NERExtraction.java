@@ -1,4 +1,4 @@
-package com.uiuc.socialbuzz.location;
+package com.uiuc.socialbuzz.helper;
 
 public class NERExtraction {
 	
