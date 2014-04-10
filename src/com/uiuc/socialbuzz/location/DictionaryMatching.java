@@ -55,6 +55,7 @@ public class DictionaryMatching {
 			gram = gram.replace("'", "\\\'");
 			
 			
+			
 			matchingString = 
 				"select id,locationname from dictionary where " +
 				//straightforward partial match
@@ -82,24 +83,58 @@ public class DictionaryMatching {
 			{
 				int id = rs.getInt("id");
 				String location = rs.getString("locationname");
-				//check if the gram is very common and its matching vaguely to the
+			
 				
+				
+				
+				//check if already hit by a previous gram
 				if (!alreadyHit(probableLocations, id, gram))
 				{
 					Location loc = new Location();
 					loc.id = id;
 					loc.name = location;
 					loc.ngram.add(gram);
+					
+					//check if matching very vaguely to the location
+					//lot of characters before and after the gram 
+			
+					if (checkVagueMatch(loc, gram))
+						continue;
+					
+					//System.out.println(location+" "+gram);
 					probableLocations.add(loc);
 				}
 			}
 		}
-		con.close();
+		
 
 		return probableLocations;
 	}
 	
 	
+	private boolean checkVagueMatch(Location location, String gram) 
+	{
+		//System.out.println(location+" "+gram);
+		String locationLowerCase = location.name.toLowerCase();
+		//System.out.println(locationLowerCase.indexOf(gram));
+		//System.out.println(location.length()+" "+gram.length());
+		
+		if (locationLowerCase.indexOf(gram) > 0 && (location.name.length()-gram.length()-locationLowerCase.indexOf(gram)>2))
+		{
+			//System.out.println("vague match..");
+			return true;
+		}
+		String locationWithoutSpace = locationLowerCase.replaceFirst(" ", "");
+		if (locationWithoutSpace.indexOf(gram) > 0 && (location.name.length()-gram.length()-locationWithoutSpace.indexOf(gram)>2))
+		{
+			//System.out.println("vague match..");
+			return true;
+		}
+		return false;
+	}
+
+	
+
 	/***********************************************************************
 	 * Method which checks if the location we found is already matched due 
 	 * to previous ngram
@@ -146,7 +181,7 @@ public class DictionaryMatching {
 			if (loc.hits == maxHits)
 			{
 				maxHitLocations.add(loc);
-				System.out.println(loc.name);
+				//System.out.println(loc.name);
 				
 			}
 		}
@@ -160,8 +195,8 @@ public class DictionaryMatching {
 		{
 			for (String ngram : loc.ngram)
 			{
-				int editDist = getEditDistance(ngram, loc.name);
-				
+				int editDist = getEditDistance(ngram.toLowerCase(), loc.name.toLowerCase());
+				//System.out.println("edit dist "+editDist+" "+ngram+" "+loc.name);
 				if (editDist <= minEditDist)
 				{
 					if (editDist == minEditDist)
@@ -197,14 +232,14 @@ public class DictionaryMatching {
 	{
 		int len1 = one.length();
 		int len2 = two.length();
-		
+		//System.out.println(len1+" "+len2);
 		int[][] distanceMatrix = new int[len1+1][len2+1];
 		
 		for (int i=0; i<=len1; i++)
 		{
 			distanceMatrix[i][0] = i;
 		}
-		for (int j=0; j<len2; j++)
+		for (int j=0; j<=len2; j++)
 		{
 			distanceMatrix[0][j] = j;
 		}
@@ -234,6 +269,14 @@ public class DictionaryMatching {
 				}
 			}
 		}
+		/*for ( int i=0; i<=len1; i++)
+		{
+			for (int j=0; j<=len2; j++)
+			{
+				System.out.print(distanceMatrix[i][j]+" ");
+			}
+			System.out.println();
+		}*/
 		return distanceMatrix[len1][len2];
 	}
 }
