@@ -1,0 +1,84 @@
+on my way	3
+on their way	3
+on our way	1
+way	11
+on	74
+at	276
+go to	14
+going on	3
+go for	3
+go	28
+chicken	5
+i'm at	143
+lounge	10
+drinks	3
+bar	15
+grill	10
+pizza	10
+breakfast	6
+auto	6
+job	29
+come	15
+come on over	1
+come on out	2
+beer	3
+restaurant	7
+food	12
+lunch	10
+theater	6
+burger	3
+basketball	6
+outside	18
+here in	1
+here for	2
+here	14
+parking	3
+corner of	4
+corner	4
+walking up	1
+walking down	1
+walking	7
+near	2
+cafe	12
+coffee	4
+over at	2
+heading to	1
+in front of	3
+mexican	7
+tonight at	3
+tonight	17
+dinner	6
+free	17
+street	21
+party	6
+inn	4
+quad	28
+is open	2
+date	3
+am	6
+pm	3
+time	21
+shoppe	5
+shop	2
+bbq	3
+ale	4
+with	48
+market	5
+place	1
+others	22
+sandwich	15
+club	8
+today	24
+selling	3
+@ The	15
+library	25
+eating	3
+ @ 	71
+music	14
+art	5
+pub	4
+center	16
+gym	2
+fitness	2
+park	11
+where	8

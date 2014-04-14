@@ -12,9 +12,12 @@ public class DictionaryMatching {
 	String matchingString = null;
 	
 	//Database credentials
-	String user = "root";
+	/*String user = "root";
 	String pw = "root";
-	String dbUrl = "jdbc:mysql://localhost/tedas";
+	String dbUrl = "jdbc:mysql://localhost/tedas";*/
+	String user = "pawar2";
+	String pw = "change_me#";
+	String dbUrl = "jdbc:mysql://harrier02.cs.illinois.edu/test";
 	String dbClass = "com.mysql.jdbc.Driver";
 	Connection con = null;
 	
@@ -39,7 +42,7 @@ public class DictionaryMatching {
 	 * @return
 	 * @throws SQLException
 	 ***********************************************************************/
-	ArrayList<Location> detectLocations(ArrayList<String> grams) throws SQLException
+	public ArrayList<Location> detectLocations(ArrayList<String> grams) throws SQLException
 	{
 		ArrayList<Location> probableLocations = new ArrayList<Location>();
 		
@@ -84,24 +87,20 @@ public class DictionaryMatching {
 				int id = rs.getInt("id");
 				String location = rs.getString("locationname");
 			
-				
+				if (checkVagueMatch(location, gram))
+					continue;
 				
 				
 				//check if already hit by a previous gram
-				if (!alreadyHit(probableLocations, id, gram))
+				if (!alreadyHit(probableLocations, id, location, gram))
 				{
 					Location loc = new Location();
 					loc.id = id;
 					loc.name = location;
-					loc.ngram.add(gram);
+					loc.ngram.add(new NGram(gram));
 					
-					//check if matching very vaguely to the location
-					//lot of characters before and after the gram 
-			
-					if (checkVagueMatch(loc, gram))
-						continue;
 					
-					//System.out.println(location+" "+gram);
+					//System.out.println("addint to prob : "+id+ " "+location+" "+gram);
 					probableLocations.add(loc);
 				}
 			}
@@ -112,24 +111,52 @@ public class DictionaryMatching {
 	}
 	
 	
-	private boolean checkVagueMatch(Location location, String gram) 
+	private boolean checkVagueMatch(String location, String gram) 
 	{
 		//System.out.println(location+" "+gram);
-		String locationLowerCase = location.name.toLowerCase();
+		String locationLowerCase = location.toLowerCase();
 		//System.out.println(locationLowerCase.indexOf(gram));
 		//System.out.println(location.length()+" "+gram.length());
 		
-		if (locationLowerCase.indexOf(gram) > 0 && (location.name.length()-gram.length()-locationLowerCase.indexOf(gram)>2))
+		//start of gram and characters left at the end
+		int start, end;
+		start = locationLowerCase.indexOf(gram);
+		//System.out.println(location+" "+gram+" "+start);
+		if ((start>0 && locationLowerCase.charAt(start-1)==' ') || (start==0))
+		{
+			if( (((start+gram.length())<locationLowerCase.length()) && locationLowerCase.charAt(start+gram.length())==' ') || ((start+gram.length())==location.length()))
+			{
+				//System.out.println("returning false");
+				return false;
+			}
+				
+		}
+		end = location.length() - gram.length() - locationLowerCase.indexOf(gram);
+		if (start > 0 && (end>2)) //how to choose this metric
 		{
 			//System.out.println("vague match..");
 			return true;
 		}
+		
+		
 		String locationWithoutSpace = locationLowerCase.replaceFirst(" ", "");
-		if (locationWithoutSpace.indexOf(gram) > 0 && (location.name.length()-gram.length()-locationWithoutSpace.indexOf(gram)>2))
+		start = locationWithoutSpace.indexOf(gram);
+		if ((start>0 && locationWithoutSpace.charAt(start-1)==' ') || (start==0))
+		{
+			if( (((start+gram.length())<locationWithoutSpace.length()) && locationWithoutSpace.charAt(start+gram.length())==' ') || ((start+gram.length())==locationWithoutSpace.length()))
+			{
+				return false;
+			}
+				
+		}
+		end = locationWithoutSpace.length() - gram.length() - locationWithoutSpace.indexOf(gram);
+		if (start > 0 && (end>2)) //how to choose this metric
 		{
 			//System.out.println("vague match..");
 			return true;
 		}
+		
+		
 		return false;
 	}
 
@@ -142,16 +169,19 @@ public class DictionaryMatching {
 	 * @param lid - new location id to be put
 	 * @return
 	 **************************************************************************/
-	boolean alreadyHit(ArrayList<Location> locArr, int lid, String gram)
+	boolean alreadyHit(ArrayList<Location> locArr, int lid, String location, String gram)
 	{
 		boolean alreadyHit = false;
 		
 		for (Location loc : locArr)
 		{
-			if (loc.id == lid)
+			if (loc.id == lid 
+					|| loc.name.equalsIgnoreCase(location)
+					)
 			{
+				//System.out.println("increasinf hi of "+loc.id);
 				loc.hits++;
-				loc.ngram.add(gram);
+				loc.ngram.add(new NGram(gram));
 				alreadyHit = true;
 				break;
 			}
@@ -164,7 +194,7 @@ public class DictionaryMatching {
 	 * Gets the most probable location from amongst the ones hit
 	 * 
 	 ************************************************************************/
-	Location getMostProbaleLocation(ArrayList<Location> locations)
+	public Location getMostProbaleLocation(ArrayList<Location> locations)
 	{
 		int maxHits = Integer.MIN_VALUE;
 		for (Location loc : locations)
@@ -178,10 +208,10 @@ public class DictionaryMatching {
 		ArrayList<Location> maxHitLocations = new ArrayList<Location>();
 		for (Location loc : locations)
 		{
-			if (loc.hits == maxHits)
+			if (loc.hits == maxHits || loc.hits== maxHits-1)
 			{
 				maxHitLocations.add(loc);
-				//System.out.println(loc.name);
+			//	System.out.println(loc.name);
 				
 			}
 		}
@@ -193,8 +223,10 @@ public class DictionaryMatching {
 		String bestMatchedGram = "";
 		for (Location loc : maxHitLocations)
 		{
-			for (String ngram : loc.ngram)
+			
+			for (NGram ng : loc.ngram)
 			{
+				String ngram = ng.gram;
 				int editDist = getEditDistance(ngram.toLowerCase(), loc.name.toLowerCase());
 				//System.out.println("edit dist "+editDist+" "+ngram+" "+loc.name);
 				if (editDist <= minEditDist)
@@ -202,8 +234,9 @@ public class DictionaryMatching {
 					if (editDist == minEditDist)
 					{
 						//if (loc.name.length() > bestMatchedLocation.name.length())
-						if (ngram.length() > bestMatchedGram.length())
+						if (ngram.replace("\\", "").length() > bestMatchedGram.length())
 						{
+							//System.out.println(ngram.length()+" "+bestMatchedGram.length());
 							bestMatchedLocation = loc;
 							bestMatchedGram = ngram;
 						}
@@ -217,6 +250,7 @@ public class DictionaryMatching {
 				}
 			}
 		}
+		bestMatchedLocation.editDistance = minEditDist;
 		return bestMatchedLocation;
 	}
 	

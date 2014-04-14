@@ -16,16 +16,22 @@ public class ProcessTweet {
 	public HashSet<String> stopwords;
 	public HashSet<String> filterwords;
 	public HashMap<String, Integer> tf;
-	String cityFile = "config\\cities.txt"; 
+	/*String cityFile = "config\\cities.txt"; 
 	String stateFile = "config\\states.txt"; 
 	String stopWordsFile = "config\\stop_words.txt";
 	String filterFile = "config\\filter.txt";
-	String tfFile = "config\\tf.txt";
+	String tfFile = "config\\tf.txt";*/
+	
+	String cityFile = "cities.txt"; 
+	String stateFile = "states.txt"; 
+	String stopWordsFile = "stop_words.txt";
+	String filterFile = "filter.txt";
+	String tfFile = "tf.txt";
 	Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
 	Matcher m = null;
 	int MAX_GRAM_SIZE = 4;
 	
-	ProcessTweet()
+	public ProcessTweet()
 	{
 		
 		//Create city and state hash sets
@@ -44,7 +50,7 @@ public class ProcessTweet {
 		
 	}
 	
-	ArrayList<String> generateNGrams(String tweet)
+	public ArrayList<String> generateNGrams(String tweet)
 	{
 		ArrayList<String> grams = new ArrayList<String>();
 
@@ -119,11 +125,11 @@ public class ProcessTweet {
 			if (!existsInCitiesStates(word) 
 					&& !existsInStopWords(word) 
 					&& !isNumeric(word)
-					//&& existsInTF(word)<100000
+					&& existsInTF(word)<100000
 					)
 			{
 				grams.add(word);
-				System.out.print(word+" ");
+				//System.out.print(word+" ");
 			}
 		}
 		
@@ -374,4 +380,101 @@ public class ProcessTweet {
 	  return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
 	}
 	
+	
+	public ArrayList<String> generateNGramsWithoutFiltering(String tweet)
+	{
+		ArrayList<String> grams = new ArrayList<String>();
+
+		//splits on spaces and on ....
+		String[] allWords = tweet.split("\\s+|\\.\\.+");
+		
+		
+		ArrayList<String> cleanWords = new ArrayList<String>();
+		int n =0;
+		
+		//Process tweet to get clean words
+		//remove URLs
+		for (String word : allWords)
+		{
+			String addWord = word;
+	
+			//replace the ??? which appear a lot in the tweets
+			addWord = addWord.replaceAll("\\?", "");
+			
+			if (addWord.trim().length()==0)
+				continue;
+			//System.out.println("3"+ word);
+			//check if leading characters are something we dont want
+			m = p.matcher(""+addWord.charAt(0));
+			while (m.find())
+			{
+				addWord = addWord.substring(1);	
+				if (addWord.trim().length()==0) break;
+				m = p.matcher(""+addWord.charAt(0));
+			}
+			
+			
+			//System.out.println("4"+ word);
+			if (addWord.trim().length()==0)
+				continue;
+			
+			//check if trailing characters are something we dont want
+			m = p.matcher(""+addWord.charAt(addWord.length()-1));
+			while (m.find())
+			{
+				addWord = addWord.substring(0,addWord.length()-1);
+				if (addWord.trim().length()==0) break;
+				m = p.matcher(""+addWord.charAt(addWord.length()-1));
+			} 
+			
+			//System.out.println("4"+ word);
+			if (addWord.trim().length()==0)
+				continue;
+			
+			//System.out.println("5"+ word);
+			if (addWord.trim().length()>0)
+			{
+				cleanWords.add(addWord.toLowerCase());
+				//System.out.print(addWord+" ");
+			}
+		
+		}
+		n = cleanWords.size();
+		
+		//Generate 1 grams
+		for (String word : cleanWords)
+		{
+		
+			{
+				grams.add(word);
+				//System.out.print(word+" ");
+			}
+		}
+		
+		int gramSize = 2;
+		StringBuilder sb = null;
+		//Generate n grams
+		int gramLimit = ((n-1) > MAX_GRAM_SIZE)? (MAX_GRAM_SIZE) : (n-1);
+		for (int i=0; i<gramLimit; i++)
+		{
+			for (int j=0; j<=n-gramSize; j++)
+			{
+				sb = new StringBuilder();
+				sb.insert(0, "");
+				int k=0;
+				
+				while (k<gramSize)
+				{
+					sb.append(cleanWords.get(j+k));
+					
+					sb.append(" ");
+					k++;
+				}
+				grams.add(sb.toString().trim());
+			}
+			gramSize++;
+		}
+
+		return grams;
+	}
 }

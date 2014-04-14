@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Location 
 { 
-	ArrayList<String> ngram = new ArrayList<String>();
+	ArrayList<NGram> ngram = new ArrayList<NGram>();
 	int id; 
 	String name; 
 	String official_name; 
@@ -20,6 +20,8 @@ public class Location
 	String opening_hours; 
 	String website; 
 	Double[] coord; 
+	
+	public int editDistance=Integer.MAX_VALUE;
 	
 	int hits = 1;
 }

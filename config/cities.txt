@@ -458,9 +458,6 @@ Tuscaloosa
 Tuscumbia
 Tuskegee
 Underwood-Petersville
-Union
-Union
-Union
 Uniontown
 Valley
 Valley
@@ -2602,7 +2599,6 @@ Twentynine
 Twentynine
 Twin
 Ukiah
-Union
 Upland
 Upper
 Vacaville
@@ -4038,9 +4034,6 @@ Trinity
 Twin
 Tyndall
 Umatilla
-Union
-University
-University
 Upper
 Utopia
 Valparaiso
@@ -4676,8 +4669,6 @@ Tybee
 Tyrone
 Ty
 Unadilla
-Union
-Union
 Unionville
 Uvalda
 Valdosta
@@ -6255,9 +6246,6 @@ Troy
 Troy
 Tuscola
 Ullin
-Union
-Union
-University
 Urbana
 Ursa
 Valier
@@ -6914,7 +6902,6 @@ Trail
 Tri-Lakes
 Troy
 Ulen
-Union
 Uniondale
 Universal
 Upland
@@ -7842,10 +7829,7 @@ Truro
 Turin
 Udell
 Underwood
-Union
 Unionville
-University
-University
 Urbana
 Urbandale
 Ute
@@ -8976,7 +8960,6 @@ Ten
 Thornhill
 Tompkinsville
 Trenton
-Union
 Uniontown
 Upton
 Valley
@@ -9880,8 +9863,6 @@ Tilghman
 Towson
 Trappe
 Travilah
-Union
-University
 Upper
 Vienna
 Waldorf
@@ -10718,7 +10699,6 @@ Tustin
 Twining
 Twin
 Ubly
-Union
 Unionville
 Utica
 Vandalia
@@ -11939,7 +11919,6 @@ Tunica
 Tupelo
 Tutwiler
 Tylertown
-Union
 Utica
 Vaiden
 Vancleave
@@ -12852,11 +12831,8 @@ Tuscumbia
 Twin
 Twin
 Umber
-Union
-Union
 Unionville
 Unity
-University
 Uplands
 Urbana
 Urich
@@ -13705,7 +13681,6 @@ Trumbull
 Uehling
 Ulysses
 Unadilla
-Union
 Upland
 Utica
 Valentine
@@ -14329,9 +14304,6 @@ Trenton
 Tuckerton
 Turnersville
 Twin
-Union
-Union
-Union
 Upper
 Ventnor
 Vernon
@@ -14604,7 +14576,6 @@ Tse
 Tucumcari
 Tularosa
 Twin
-University
 Upper
 Vadito
 Vado
@@ -15566,9 +15537,7 @@ Turin
 Tuxedo
 Unadilla
 Uniondale
-Union
 Unionville
-University
 Upper
 Upper
 Utica
@@ -17636,12 +17605,9 @@ Turpin
 Tuscarawas
 Twinsburg
 Uhrichsville
-Union
-Union
 Uniontown
 Unionville
 Uniopolis
-University
 Upper
 Upper
 Urbana
@@ -18380,7 +18346,6 @@ Tushka
 Tuttle
 Twin
 Tyrone
-Union
 Valley
 Valley
 Valliant
@@ -18723,7 +18688,6 @@ Tutuilla
 Tygh
 Ukiah
 Umatilla
-Union
 Unity
 Vale
 Veneta
@@ -20011,8 +19975,6 @@ Twilight
 Tyler
 Tyrone
 Ulysses
-Union
-Union
 Uniontown
 Unionville
 Upland
@@ -20513,7 +20475,6 @@ Trenton
 Troy
 Turbeville
 Ulmer
-Union
 Utica
 Valley
 Vance
@@ -21252,7 +21213,6 @@ Troy
 Tullahoma
 Tusculum
 Unicoi
-Union
 Vanleer
 Viola
 Vonore
@@ -22676,9 +22636,7 @@ Tyler
 Tynan
 Uhland
 Uncertain
-Union
 Universal
-University
 Utopia
 Uvalde
 Uvalde
@@ -23480,7 +23438,6 @@ Troutdale
 Troutville
 Tuckahoe
 Tysons
-Union
 Urbanna
 Vansant
 Verona
@@ -23984,10 +23941,7 @@ Tukwila
 Tulalip
 Tumwater
 Twisp
-Union
-Union
 Uniontown
-University
 Vader
 Vancouver
 Vantage
@@ -24292,7 +24246,6 @@ Thurmond
 Tornado
 Triadelphia
 Tunnelton
-Union
 Valley
 Vienna
 War
@@ -24885,8 +24838,6 @@ Trempealeau
 Turtle
 Twin
 Two
-Union
-Union
 Unity
 Valders
 Verona
