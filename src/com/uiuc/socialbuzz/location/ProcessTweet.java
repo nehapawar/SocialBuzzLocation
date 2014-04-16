@@ -16,17 +16,17 @@ public class ProcessTweet {
 	public HashSet<String> stopwords;
 	public HashSet<String> filterwords;
 	public HashMap<String, Integer> tf;
-	/*String cityFile = "config\\cities.txt"; 
+	String cityFile = "config\\cities.txt"; 
 	String stateFile = "config\\states.txt"; 
 	String stopWordsFile = "config\\stop_words.txt";
 	String filterFile = "config\\filter.txt";
-	String tfFile = "config\\tf.txt";*/
+	String tfFile = "config\\tf.txt";
 	
-	String cityFile = "cities.txt"; 
+	/*String cityFile = "cities.txt"; 
 	String stateFile = "states.txt"; 
 	String stopWordsFile = "stop_words.txt";
 	String filterFile = "filter.txt";
-	String tfFile = "tf.txt";
+	String tfFile = "tf.txt";*/
 	Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
 	Matcher m = null;
 	int MAX_GRAM_SIZE = 4;

@@ -14,6 +14,9 @@ import java.util.HashSet;
 import java.util.Scanner;
 
 import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
 import twitter4j.URLEntity;
 import twitter4j.User;
 
@@ -25,15 +28,14 @@ public class SocialBuzzLocationListener {
 	ProcessTweet pt;
 	DictionaryMatching dm;
 	HashMap<String, Integer> corpusHash = new HashMap<String, Integer>();
-	File f = new File("socialbuzz.svm.model");
+	File f = new File("config\\socialbuzz.svm.model");
 	SVMLightModel svm ;
 	
 	SocialBuzzLocationListener() throws SQLException
 	{	
-		setupFiles();
 		createCorpus();
 		loadClassifier();
-		 
+		setupFiles();	 
 	}
 
 	void setupFiles() throws SQLException
@@ -68,9 +70,11 @@ public class SocialBuzzLocationListener {
 	void listener() throws SQLException
 	{
 		Status status = null;
+		long tweetid = Long.parseLong("443553782534639617");
+		status = getStatus(tweetid);
 		//get this from status
 		String[] tweets = 
-		{"game of thrones night at siebel", 
+		{/*"game of thrones night at siebel", 
 			"Picture Perfect night in Champaign...",
 			"I guess you can consider last night semi-successful ???? #dzdoessemi #hesthebomb #mardigras @ Soma… http://t.co/spLF2bcgjT",
 			"JAGABOMBS!!! (@ It's Brothers Bar & Grill) http://t.co/rXYGVhAqe1",
@@ -93,14 +97,15 @@ public class SocialBuzzLocationListener {
 			"Orpheus in the Underworld (@ Krannert Center for the Performing Arts) http://t.co/ui5ond4bza",
 			"Today's #dpdough #foodporn is a sausage and cheese pizza with garlic parmacrust around the edges. This… http://t.co/IWm60H5pKb",
 			"Do not buy the Panera lobster bisque soup unless if you want to eat a cup of cream. #disappointed #sogross",
-			"Iced vanilla macchiato is the best thing that ever happened to Starbucks ??",
+			*/"Iced vanilla macchiato is the best thing that ever happened to Starbucks ??"/*,
 			"7 pm group meetings ain't right.",
 			"@yaya_bmasta and who wants to go to Applebee's by themselves? Couples retreat, homieeee",
-				"get me a mac book"};
+				"get me a mac book"*/};
 			
 		int counter = 1;
-		for (String tweet : tweets)
-		{
+		String tweet  =status.getText();
+		//for (String tweet : tweets)
+		//{
 			
 			System.out.println(counter);
 			System.out.println(tweet);
@@ -113,17 +118,21 @@ public class SocialBuzzLocationListener {
 		{
 			System.out.println("Not found");
 			//return;
-			continue;
+			//continue;
 		}
 		
 		
 		//detect locations
-		ArrayList<Location> locations = dm.detectLocations(ngrams);
-		if (locations.size()==0)
+		ArrayList<Location> locations = null;
+		if (ngrams!=null)
+		{
+			locations = dm.detectLocations(ngrams);
+		}
+		if (locations == null || locations.size()==0)
 		{
 			System.out.println("No location found");
 			//return;
-			continue;
+			//continue;
 		}
 		
 		
@@ -135,7 +144,11 @@ public class SocialBuzzLocationListener {
 		
 		//once you have list of possible matches and their coordinates, 
 		// find the most probable one 
-		Location mostProbableLoc = dm.getMostProbaleLocation(locations);
+		Location mostProbableLoc = null;
+		if (locations!=null && locations.size()!=0)
+		{
+			mostProbableLoc = dm.getMostProbaleLocation(locations);
+		}
 		if (mostProbableLoc!=null)
 			System.out.println("Most probable location : "+mostProbableLoc.name);
 		else
@@ -144,16 +157,16 @@ public class SocialBuzzLocationListener {
 		
 		
 		//send this tweet to classifier to validate the result 
-	/*	double f1 = new Double (ngrams==null ? 0 : ngrams.size());
-		double f4= f1==0 ? -1 : mostProbableLoc.editDistance;
+		double f1 = locations==null? 0 : locations.size();
+		double f4= mostProbableLoc==null ? Integer.MAX_VALUE : mostProbableLoc.editDistance;
 		double prediction = classifyTweet(status, f1, f4);
 		
-		if (prediction==1)
-			System.out.println("Its a location tweet");*/
+		
+			System.out.println(prediction+"Its a location tweet");
 		
 		}
 		
-	}
+	//}
 	
 	
 	double classifyTweet(Status s, double f1, double f4)
@@ -204,7 +217,7 @@ public class SocialBuzzLocationListener {
 		double f5 = org.apache.commons.lang.StringUtils.countMatches(urls, "4sq");
 		values[17]=f5;
 		
-		
+		System.out.println(f1+" "+f2+" "+f3+" "+f4+" "+f5);
 		FeatureVector v = new FeatureVector(dimensions, values);
 		double prediction = svm.classify(v);
 		
@@ -248,5 +261,20 @@ public class SocialBuzzLocationListener {
 			}			
 		}
 		return urlStr;
+	}
+	
+	
+	Status getStatus(long tweetid)
+	{
+		 Twitter twitter = new TwitterFactory().getInstance();
+		 Status s = null;
+		 try {
+				s = twitter.showStatus(tweetid);
+				//System.out.println(s.getText());
+			} catch (TwitterException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return s;
 	}
 }

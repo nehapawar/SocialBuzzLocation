@@ -122,7 +122,7 @@ public class ExtractFeatures {
 					}
 					
 					//fourth feature : edit distance of gram
-					int f4=-1;
+					int f4=Integer.MAX_VALUE;
 					if (f1!=0)
 					{
 						Location loc = dm.getMostProbaleLocation(locations);

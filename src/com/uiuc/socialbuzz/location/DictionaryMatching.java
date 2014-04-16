@@ -12,19 +12,17 @@ public class DictionaryMatching {
 	String matchingString = null;
 	
 	//Database credentials
-	/*String user = "root";
+	String user = "root";
 	String pw = "root";
-	String dbUrl = "jdbc:mysql://localhost/tedas";*/
-	String user = "pawar2";
+	String dbUrl = "jdbc:mysql://localhost/tedas";
+	/*String user = "pawar2";
 	String pw = "change_me#";
-	String dbUrl = "jdbc:mysql://harrier02.cs.illinois.edu/test";
+	String dbUrl = "jdbc:mysql://harrier02.cs.illinois.edu/test";*/
 	String dbClass = "com.mysql.jdbc.Driver";
 	Connection con = null;
 	
 	public DictionaryMatching() 
 	{
-		
-		
 		try {
 			Class.forName(dbClass);
 			con = DriverManager.getConnection(dbUrl, user, pw);
