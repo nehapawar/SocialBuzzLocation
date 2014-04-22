@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 public class DictionaryMatching {
 
@@ -194,21 +196,39 @@ public class DictionaryMatching {
 	 ************************************************************************/
 	public Location getMostProbaleLocation(ArrayList<Location> locations)
 	{
-		int maxHits = Integer.MIN_VALUE;
+		/*Comparator<Location> comparator = new LocationComparer();
+		PriorityQueue<Location> PQ = new PriorityQueue<Location>(10, comparator );
+		*/int maxHits = Integer.MIN_VALUE;
+		int minHits = Integer.MAX_VALUE;
 		for (Location loc : locations)
 		{
+			//PQ.add(loc);
 			if (loc.hits > maxHits)
 			{
 				maxHits=loc.hits;
 			}
+			if (loc.hits < minHits)
+			{
+				minHits = loc.hits;
+			}
 		}
 		
-		ArrayList<Location> maxHitLocations = new ArrayList<Location>();
+		//computed score with hits*******************************************
+		/*for (Location l : PQ)
+		{
+			l.score+= new Double (maxHits - l.hits) / (maxHits - minHits);
+		}*/
+		//********************************************************************
+		Comparator comparator = new LocationComparer();
+		PriorityQueue<Location> maxHitLocations = new PriorityQueue<Location>(10,comparator);
+		//ArrayList<Location> maxHitLocations = new ArrayList<Location>();
 		for (Location loc : locations)
 		{
 			if (loc.hits == maxHits || loc.hits== maxHits-1)
 			{
+				loc.score+= new Double (maxHits - loc.hits) / (maxHits - minHits);
 				maxHitLocations.add(loc);
+				
 			//	System.out.println(loc.name);
 				
 			}
@@ -217,9 +237,13 @@ public class DictionaryMatching {
 		//for each entry in max locations, get edit dist with the ngrams
 		//pick the one with min edit distance
 		int minEditDist = Integer.MAX_VALUE;
+		int maxEditDistance = Integer.MIN_VALUE;
 		Location bestMatchedLocation = null;
 		String bestMatchedGram = "";
+		
+		//TODO: UNCOMMENT  THIS!
 		for (Location loc : maxHitLocations)
+		//for (Location loc : PQ)
 		{
 			
 			for (NGram ng : loc.ngram)
@@ -246,10 +270,21 @@ public class DictionaryMatching {
 						bestMatchedGram = ngram;
 					}	
 				}
+				if (editDist > maxEditDistance)
+				{
+					maxEditDistance = editDist;
+				}
 			}
 		}
+		
+		for (Location l : maxHitLocations)
+		{
+			l.score -= new Double (maxEditDistance - l.editDistance) / (maxEditDistance - minEditDist);
+		}
+		
 		bestMatchedLocation.editDistance = minEditDist;
 		return bestMatchedLocation;
+		//return maxHitLocations.remove();
 	}
 	
 	

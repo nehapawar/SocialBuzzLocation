@@ -22,6 +22,6 @@ public class Location
 	Double[] coord; 
 	
 	public int editDistance=Integer.MAX_VALUE;
-	
+	double score = 0;
 	int hits = 1;
 }
